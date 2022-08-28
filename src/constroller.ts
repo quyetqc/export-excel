@@ -1,5 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import xlsx from 'xlsx';
+import path from 'path';
+import fs from 'fs'
 import multer from 'multer';
 
 export const exportFile: RequestHandler = async (req: Request, res: Response) => {
@@ -37,6 +39,11 @@ export const exportFile: RequestHandler = async (req: Request, res: Response) =>
         xlsx.utils.book_append_sheet(wb, ws, Date.now() + '.xlsx');
         const g = xlsx.utils.sheet_add_aoa(ws, [b], { origin: "A1" });
         await xlsx.writeFile(wb, `./src/uploads/${Date.now()}.xlsx`)
+        const promise = fs.promises.readFile(path.join('./src/uploads/'));
+
+        Promise.resolve(promise).then(function (buffer) {
+            console.log(buffer);
+        });
         res.send("export file thanh cong")
     } catch (err) {
         throw err
